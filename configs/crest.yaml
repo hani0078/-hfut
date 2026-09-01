@@ -1,0 +1,80 @@
+dataset: crest
+method_name: mecta
+seed: 42
+
+reference_input:
+  train_cross_entity_distractor_ratio: 2.0
+  min_train_cross_entity_distractors: 32
+
+paths:
+  data_root: ../dataset/crest_split
+  constraints: ../dataset/crest_split/constraint_dict.json
+  base_model: D:/LLM_backup/Meta-Llama-3.1-8B-Instruct
+  gte_model: D:/LLM_backup/gtelarge
+  cross_encoder_model: D:/LLM_backup/models--cross-encoder--ms-marco-MiniLM-L-6-v2/snapshots/233902d25c440f23af6f7d6e94d2946bac0bee0a
+
+embedding:
+  batch_size: 32
+  max_length: 192
+
+stage1:
+  reference_dedup_semantic_threshold: 0.88
+  reference_dedup_word_f1_threshold: 0.88
+  reference_dedup_semantic_weight: 0.75
+  retrieval_semantic_weight: 0.70
+  top_retrieval: 5
+  max_articles_per_event: 2
+  empty_article_ratio: 0.05
+  require_explicit_target_name: false
+  max_sequence_length: 32768
+  max_input_tokens: 24576
+  max_new_tokens: 4096
+  generation_batch_size: 8
+  deduplicate_generation_articles: true
+  temperature: 0.0
+  epochs: 3.0
+  learning_rate: 0.0001
+  train_batch_size: 1
+  gradient_accumulation_steps: 8
+  lora_rank: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  attention: flash_attention_2
+  attention_fallback: sdpa
+
+clustering:
+  semantic_threshold: 0.88
+  word_f1_threshold: 0.55
+  semantic_weight: 0.75
+
+supervision:
+  semantic_weight: 0.70
+  positive_threshold: 0.55
+  negative_threshold: 0.38
+  negative_screening: global_cross_constraint
+  include_reference_positives: false
+
+cross_encoder:
+  pair_order: constraint_event
+  max_length: 192
+  train_batch_size: 32
+  evaluation_batch_size: 256
+  max_epochs: 5
+  learning_rates: [0.00001]
+  weight_decay: 0.01
+  gradient_clip: 1.0
+  negatives_per_positive: [8]
+  seeds: [59]
+
+fusion:
+  normalize: percentile_rank
+  cross_weight_start: 0.50
+  cross_weight_stop: 0.50
+  cross_weight_step: 0.01
+  default_cross_weight: 0.50
+  selection_metric: geometric_mean_f1
+
+decoding:
+  budget_source: reference_event_count
+  allow_event_sharing: true
+  chronological_sort: true

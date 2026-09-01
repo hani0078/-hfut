@@ -1,0 +1,120 @@
+{"topic_id":"Afghanistan","constraint_id":0,"constraint":"Focus on Afghanistan's government, election, policy, party, and political-role events."}
+{"topic_id":"Afghanistan","constraint_id":1,"constraint":"Focus on Afghanistan's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Afghanistan","constraint_id":2,"constraint":"Focus on Afghanistan's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Afghanistan","constraint_id":3,"constraint":"Focus on Afghanistan's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Afghanistan","constraint_id":4,"constraint":"Focus on Afghanistan's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Australia","constraint_id":0,"constraint":"Focus on Australia's government, election, policy, party, and political-role events."}
+{"topic_id":"Australia","constraint_id":1,"constraint":"Focus on Australia's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Australia","constraint_id":2,"constraint":"Focus on Australia's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Australia","constraint_id":3,"constraint":"Focus on Australia's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Australia","constraint_id":4,"constraint":"Focus on Australia's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"China","constraint_id":0,"constraint":"Focus on China's government, election, policy, party, and political-role events."}
+{"topic_id":"China","constraint_id":1,"constraint":"Focus on China's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"China","constraint_id":2,"constraint":"Focus on China's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"China","constraint_id":3,"constraint":"Focus on China's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"China","constraint_id":4,"constraint":"Focus on China's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Donald_Trump","constraint_id":0,"constraint":"Focus on Donald Trump's government, election, policy, party, and political-role events."}
+{"topic_id":"Donald_Trump","constraint_id":1,"constraint":"Focus on Donald Trump's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Donald_Trump","constraint_id":2,"constraint":"Focus on Donald Trump's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Donald_Trump","constraint_id":3,"constraint":"Focus on Donald Trump's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Donald_Trump","constraint_id":4,"constraint":"Focus on Donald Trump's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"European_Union","constraint_id":0,"constraint":"Focus on European Union's government, election, policy, party, and political-role events."}
+{"topic_id":"European_Union","constraint_id":1,"constraint":"Focus on European Union's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"European_Union","constraint_id":2,"constraint":"Focus on European Union's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"European_Union","constraint_id":3,"constraint":"Focus on European Union's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"European_Union","constraint_id":4,"constraint":"Focus on European Union's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"France","constraint_id":0,"constraint":"Focus on France's government, election, policy, party, and political-role events."}
+{"topic_id":"France","constraint_id":1,"constraint":"Focus on France's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"France","constraint_id":2,"constraint":"Focus on France's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"France","constraint_id":3,"constraint":"Focus on France's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"France","constraint_id":4,"constraint":"Focus on France's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"India","constraint_id":0,"constraint":"Focus on India's government, election, policy, party, and political-role events."}
+{"topic_id":"India","constraint_id":1,"constraint":"Focus on India's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"India","constraint_id":2,"constraint":"Focus on India's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"India","constraint_id":3,"constraint":"Focus on India's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"India","constraint_id":4,"constraint":"Focus on India's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Indonesia","constraint_id":0,"constraint":"Focus on Indonesia's government, election, policy, party, and political-role events."}
+{"topic_id":"Indonesia","constraint_id":1,"constraint":"Focus on Indonesia's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Indonesia","constraint_id":2,"constraint":"Focus on Indonesia's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Indonesia","constraint_id":3,"constraint":"Focus on Indonesia's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Indonesia","constraint_id":4,"constraint":"Focus on Indonesia's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Israel","constraint_id":0,"constraint":"Focus on Israel's government, election, policy, party, and political-role events."}
+{"topic_id":"Israel","constraint_id":1,"constraint":"Focus on Israel's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Israel","constraint_id":2,"constraint":"Focus on Israel's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Israel","constraint_id":3,"constraint":"Focus on Israel's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Israel","constraint_id":4,"constraint":"Focus on Israel's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Italy","constraint_id":0,"constraint":"Focus on Italy's government, election, policy, party, and political-role events."}
+{"topic_id":"Italy","constraint_id":1,"constraint":"Focus on Italy's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Italy","constraint_id":2,"constraint":"Focus on Italy's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Italy","constraint_id":3,"constraint":"Focus on Italy's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Italy","constraint_id":4,"constraint":"Focus on Italy's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"London","constraint_id":0,"constraint":"Focus on London's government, election, policy, party, and political-role events."}
+{"topic_id":"London","constraint_id":1,"constraint":"Focus on London's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"London","constraint_id":2,"constraint":"Focus on London's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"London","constraint_id":3,"constraint":"Focus on London's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"London","constraint_id":4,"constraint":"Focus on London's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Mexico","constraint_id":0,"constraint":"Focus on Mexico's government, election, policy, party, and political-role events."}
+{"topic_id":"Mexico","constraint_id":1,"constraint":"Focus on Mexico's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Mexico","constraint_id":2,"constraint":"Focus on Mexico's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Mexico","constraint_id":3,"constraint":"Focus on Mexico's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Mexico","constraint_id":4,"constraint":"Focus on Mexico's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Nicolás_Maduro","constraint_id":0,"constraint":"Focus on Nicolás Maduro's government, election, policy, party, and political-role events."}
+{"topic_id":"Nicolás_Maduro","constraint_id":1,"constraint":"Focus on Nicolás Maduro's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Nicolás_Maduro","constraint_id":2,"constraint":"Focus on Nicolás Maduro's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Nicolás_Maduro","constraint_id":3,"constraint":"Focus on Nicolás Maduro's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Nicolás_Maduro","constraint_id":4,"constraint":"Focus on Nicolás Maduro's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Pakistan","constraint_id":0,"constraint":"Focus on Pakistan's government, election, policy, party, and political-role events."}
+{"topic_id":"Pakistan","constraint_id":1,"constraint":"Focus on Pakistan's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Pakistan","constraint_id":2,"constraint":"Focus on Pakistan's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Pakistan","constraint_id":3,"constraint":"Focus on Pakistan's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Pakistan","constraint_id":4,"constraint":"Focus on Pakistan's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Philippines","constraint_id":0,"constraint":"Focus on Philippines's government, election, policy, party, and political-role events."}
+{"topic_id":"Philippines","constraint_id":1,"constraint":"Focus on Philippines's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Philippines","constraint_id":2,"constraint":"Focus on Philippines's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Philippines","constraint_id":3,"constraint":"Focus on Philippines's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Philippines","constraint_id":4,"constraint":"Focus on Philippines's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"President_of_the_United_States","constraint_id":0,"constraint":"Focus on President of the United States's government, election, policy, party, and political-role events."}
+{"topic_id":"President_of_the_United_States","constraint_id":1,"constraint":"Focus on President of the United States's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"President_of_the_United_States","constraint_id":2,"constraint":"Focus on President of the United States's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"President_of_the_United_States","constraint_id":3,"constraint":"Focus on President of the United States's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"President_of_the_United_States","constraint_id":4,"constraint":"Focus on President of the United States's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Russia","constraint_id":0,"constraint":"Focus on Russia's government, election, policy, party, and political-role events."}
+{"topic_id":"Russia","constraint_id":1,"constraint":"Focus on Russia's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Russia","constraint_id":2,"constraint":"Focus on Russia's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Russia","constraint_id":3,"constraint":"Focus on Russia's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Russia","constraint_id":4,"constraint":"Focus on Russia's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Saudi_Arabia","constraint_id":0,"constraint":"Focus on Saudi Arabia's government, election, policy, party, and political-role events."}
+{"topic_id":"Saudi_Arabia","constraint_id":1,"constraint":"Focus on Saudi Arabia's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Saudi_Arabia","constraint_id":2,"constraint":"Focus on Saudi Arabia's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Saudi_Arabia","constraint_id":3,"constraint":"Focus on Saudi Arabia's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Saudi_Arabia","constraint_id":4,"constraint":"Focus on Saudi Arabia's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"South_Korea","constraint_id":0,"constraint":"Focus on South Korea's government, election, policy, party, and political-role events."}
+{"topic_id":"South_Korea","constraint_id":1,"constraint":"Focus on South Korea's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"South_Korea","constraint_id":2,"constraint":"Focus on South Korea's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"South_Korea","constraint_id":3,"constraint":"Focus on South Korea's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"South_Korea","constraint_id":4,"constraint":"Focus on South Korea's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Spain","constraint_id":0,"constraint":"Focus on Spain's government, election, policy, party, and political-role events."}
+{"topic_id":"Spain","constraint_id":1,"constraint":"Focus on Spain's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Spain","constraint_id":2,"constraint":"Focus on Spain's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Spain","constraint_id":3,"constraint":"Focus on Spain's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Spain","constraint_id":4,"constraint":"Focus on Spain's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Syria","constraint_id":0,"constraint":"Focus on Syria's government, election, policy, party, and political-role events."}
+{"topic_id":"Syria","constraint_id":1,"constraint":"Focus on Syria's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Syria","constraint_id":2,"constraint":"Focus on Syria's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Syria","constraint_id":3,"constraint":"Focus on Syria's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Syria","constraint_id":4,"constraint":"Focus on Syria's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"United_States","constraint_id":0,"constraint":"Focus on United States's government, election, policy, party, and political-role events."}
+{"topic_id":"United_States","constraint_id":1,"constraint":"Focus on United States's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"United_States","constraint_id":2,"constraint":"Focus on United States's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"United_States","constraint_id":3,"constraint":"Focus on United States's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"United_States","constraint_id":4,"constraint":"Focus on United States's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Venezuela","constraint_id":0,"constraint":"Focus on Venezuela's government, election, policy, party, and political-role events."}
+{"topic_id":"Venezuela","constraint_id":1,"constraint":"Focus on Venezuela's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Venezuela","constraint_id":2,"constraint":"Focus on Venezuela's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Venezuela","constraint_id":3,"constraint":"Focus on Venezuela's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Venezuela","constraint_id":4,"constraint":"Focus on Venezuela's business, economic, health, social, cultural, sports, science, and public-impact events."}
+{"topic_id":"Yemen","constraint_id":0,"constraint":"Focus on Yemen's government, election, policy, party, and political-role events."}
+{"topic_id":"Yemen","constraint_id":1,"constraint":"Focus on Yemen's court, investigation, charge, arrest, trial, and legal accountability events."}
+{"topic_id":"Yemen","constraint_id":2,"constraint":"Focus on Yemen's armed conflict, attack, military, terrorism, casualty, and security events."}
+{"topic_id":"Yemen","constraint_id":3,"constraint":"Focus on Yemen's diplomacy, international negotiation, sanctions, treaty, summit, and cross-border relations."}
+{"topic_id":"Yemen","constraint_id":4,"constraint":"Focus on Yemen's business, economic, health, social, cultural, sports, science, and public-impact events."}

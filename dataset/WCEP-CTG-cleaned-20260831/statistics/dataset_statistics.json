@@ -1,0 +1,88 @@
+{
+  "dataset": "WCEP-CTG-cleaned-20260831",
+  "generated_on": "2026-08-31",
+  "totals": {
+    "topic_count": 40,
+    "document_count": 23538,
+    "document_text_whitespace_words": 10923830,
+    "document_text_characters": 67182263,
+    "document_text_nonwhitespace_characters": 56281971,
+    "constraint_count": 200,
+    "gold_timeline_count": 200,
+    "gold_date_node_count": 4191,
+    "gold_event_count": 4288,
+    "gold_event_whitespace_words": 133109,
+    "average_documents_per_topic": 588.45,
+    "median_documents_per_topic": 477.5,
+    "min_documents_per_topic": 120,
+    "max_documents_per_topic": 2128,
+    "average_gold_date_nodes_per_timeline": 20.95,
+    "average_gold_events_per_timeline": 21.44
+  },
+  "by_split": [
+    {
+      "split": "train",
+      "split_label": "训练集",
+      "topic_count": 24,
+      "document_count": 16954,
+      "document_text_whitespace_words": 8068529,
+      "document_text_characters": 49696489,
+      "document_text_nonwhitespace_characters": 41644914,
+      "constraint_count": 120,
+      "gold_timeline_count": 120,
+      "gold_date_node_count": 2884,
+      "gold_event_count": 2956,
+      "gold_event_whitespace_words": 93615,
+      "average_documents_per_topic": 706.42,
+      "average_gold_date_nodes_per_timeline": 24.03,
+      "average_gold_events_per_timeline": 24.63
+    },
+    {
+      "split": "validation",
+      "split_label": "验证集",
+      "topic_count": 8,
+      "document_count": 3890,
+      "document_text_whitespace_words": 1742865,
+      "document_text_characters": 10665244,
+      "document_text_nonwhitespace_characters": 8926269,
+      "constraint_count": 40,
+      "gold_timeline_count": 40,
+      "gold_date_node_count": 729,
+      "gold_event_count": 743,
+      "gold_event_whitespace_words": 22059,
+      "average_documents_per_topic": 486.25,
+      "average_gold_date_nodes_per_timeline": 18.23,
+      "average_gold_events_per_timeline": 18.57
+    },
+    {
+      "split": "test",
+      "split_label": "测试集",
+      "topic_count": 8,
+      "document_count": 2694,
+      "document_text_whitespace_words": 1112436,
+      "document_text_characters": 6820530,
+      "document_text_nonwhitespace_characters": 5710788,
+      "constraint_count": 40,
+      "gold_timeline_count": 40,
+      "gold_date_node_count": 578,
+      "gold_event_count": 589,
+      "gold_event_whitespace_words": 17435,
+      "average_documents_per_topic": 336.75,
+      "average_gold_date_nodes_per_timeline": 14.45,
+      "average_gold_events_per_timeline": 14.72
+    }
+  ],
+  "definitions": {
+    "document_count": "Number of rows in documents.jsonl for the topic.",
+    "document_text_whitespace_words": "sum(len(document.text.split())); title is excluded.",
+    "document_text_characters": "Unicode code-point count of document.text, including whitespace and punctuation; title is excluded.",
+    "document_text_nonwhitespace_characters": "Unicode code-point count of document.text after excluding whitespace; title is excluded.",
+    "gold_timeline_length": "Reported both as date_node_count=len(timeline) and gold_event_count=sum(len(date.events)).",
+    "distinct_gold_dates_across_constraints": "Union of gold dates across the five constraint-specific timelines for one topic.",
+    "word_count_caveat": "Whitespace token counts are reproducible for the mainly English corpus but undercount unsegmented languages such as Japanese; use character counts for language-neutral volume comparisons."
+  },
+  "detail_files": {
+    "topics": "topic_statistics.jsonl",
+    "timelines": "timeline_statistics.jsonl"
+  }
+}
