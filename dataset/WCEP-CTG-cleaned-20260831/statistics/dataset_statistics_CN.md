@@ -1,39 +1,37 @@
 # WCEP-CTG cleaned dataset statistics
 
-Chinese version: [dataset_statistics_CN.md](dataset_statistics_CN.md)
+统计对象：`WCEP-CTG-cleaned-20260831`。本报告直接由发布目录内的 12 个核心 JSONL 文件重算。
 
-Dataset covered: `WCEP-CTG-cleaned-20260831`. This report was recalculated directly from the 12 core JSONL files in the release directory.
+## 总体规模
 
-## Overall scale
-
-| Metric | Value |
+| 指标 | 数值 |
 |---|---:|
-| Topics | 40 |
-| Documents | 23,538 |
-| Document body whitespace-delimited token count | 10,923,830 |
-| Document body Unicode character count (including whitespace and punctuation) | 67,182,263 |
-| Document body non-whitespace character count | 56,281,971 |
-| Constraints | 200 |
-| Gold-standard timelines | 200 |
-| Gold-standard date nodes | 4,191 |
-| Gold-standard events | 4,288 |
-| Average documents per topic | 588.45 |
-| Average date nodes per timeline | 20.95 |
-| Average events per timeline | 21.44 |
+| 主题 | 40 |
+| 文档 | 23,538 |
+| 文档正文空白分词数 | 10,923,830 |
+| 文档正文 Unicode 字符数（含空白、标点） | 67,182,263 |
+| 文档正文非空白字符数 | 56,281,971 |
+| 约束 | 200 |
+| 金标准时间轴 | 200 |
+| 金标准日期节点 | 4,191 |
+| 金标准事件 | 4,288 |
+| 平均每主题文档数 | 588.45 |
+| 平均每条时间轴日期节点数 | 20.95 |
+| 平均每条时间轴事件数 | 21.44 |
 
-## Train/validation/test splits
+## 训练／验证／测试划分
 
-| Split | Topics | Documents | Body whitespace-delimited tokens | Body characters | Constraints/Timelines | Date nodes | Gold-standard events |
+| 划分 | 主题 | 文档 | 正文空白分词 | 正文字符 | 约束/时间轴 | 日期节点 | 金标准事件 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Training (`train`) | 24 | 16,954 | 8,068,529 | 49,696,489 | 120/120 | 2,884 | 2,956 |
-| Validation (`validation`) | 8 | 3,890 | 1,742,865 | 10,665,244 | 40/40 | 729 | 743 |
-| Test (`test`) | 8 | 2,694 | 1,112,436 | 6,820,530 | 40/40 | 578 | 589 |
+| 训练集 (`train`) | 24 | 16,954 | 8,068,529 | 49,696,489 | 120/120 | 2,884 | 2,956 |
+| 验证集 (`validation`) | 8 | 3,890 | 1,742,865 | 10,665,244 | 40/40 | 729 | 743 |
+| 测试集 (`test`) | 8 | 2,694 | 1,112,436 | 6,820,530 | 40/40 | 578 | 589 |
 
-## Per-topic statistics
+## 每主题统计
 
-Each entry under `Timeline lengths c0..c4` is formatted as `number of date nodes/number of events`, corresponding to constraint_id 0–4 in order.
+`时间轴长度 c0..c4` 的每一项格式为 `日期节点数/事件数`，依次对应 constraint_id 0–4。
 
-| Split | Topic | Documents | Body whitespace-delimited tokens | Body characters | Gold date nodes | Gold events | Unique dates across constraints | Timeline lengths c0..c4 |
+| 划分 | 主题 | 文档 | 正文空白分词 | 正文字符 | 金日期节点 | 金事件 | 跨约束去重日期 | 时间轴长度 c0..c4 |
 |---|---|---:|---:|---:|---:|---:|---:|---|
 | `train` | `Afghanistan` | 550 | 191,966 | 1,200,968 | 78 | 80 | 70 | 0:7/7, 1:6/6, 2:58/60, 3:6/6, 4:1/1 |
 | `train` | `Australia` | 401 | 164,357 | 1,010,327 | 79 | 80 | 73 | 0:10/10, 1:16/17, 2:18/18, 3:13/13, 4:22/22 |
@@ -76,11 +74,11 @@ Each entry under `Timeline lengths c0..c4` is formatted as `number of date nodes
 | `test` | `Theresa_May` | 252 | 146,795 | 867,320 | 67 | 68 | 47 | 0:43/44, 1:5/5, 2:4/4, 3:14/14, 4:1/1 |
 | `test` | `Turkey` | 476 | 197,021 | 1,224,456 | 100 | 100 | 85 | 0:20/20, 1:12/12, 2:42/42, 3:20/20, 4:6/6 |
 
-## Counting methodology
+## 统计口径
 
-- The document count is calculated from the number of lines in `documents.jsonl`.
-- Whitespace-delimited token counts include only the `text` body and do not count the `title` again. The count equals Python `len(text.split())`; because the corpus is primarily English but contains a small amount of Japanese/Chinese content, Unicode character counts are preferred for cross-language comparisons.
-- The Unicode character count uses Python `len(text)` and includes whitespace and punctuation; the non-whitespace character count is also provided in the detailed JSON records.
-- Gold-standard timeline length is described using both the number of date nodes and the number of events because a single date node may contain multiple events.
-- The constraint text, start and end dates, span, number of date nodes, and number of events for each timeline are provided in `timeline_statistics.jsonl`.
-- More complete per-topic statistics (mean, median, minimum, maximum, start and end dates, etc.) are provided in `topic_statistics.jsonl`.
+- 文档数量按 `documents.jsonl` 行数统计。
+- 文档字数只统计 `text` 正文，不重复计入 `title`。`空白分词数` 等于 Python `len(text.split())`；由于语料以英文为主但含少量日文/汉字内容，跨语言比较优先使用 Unicode 字符数。
+- Unicode 字符数使用 Python `len(text)`，包含空白和标点；同时在 JSON 明细中提供非空白字符数。
+- 金标准时间轴长度同时使用日期节点数和事件数描述，因为同一个日期节点可以包含多个事件。
+- 每条时间轴的约束文本、起止日期、跨度、日期节点数和事件数见 `timeline_statistics.jsonl`。
+- 更完整的逐主题统计（均值、中位数、最小值、最大值、起止日期等）见 `topic_statistics.jsonl`。

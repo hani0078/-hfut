@@ -1,35 +1,29 @@
 # mecta
 
-`mecta` 是一个面向约束时间轴生成实验的独立代码仓库，包含 CREST 与
-WCEP-CTG 两个经过格式统一的数据集、数据读取、事件聚类、Stage-II 监督构造、
-交叉编码器训练、语义分数融合、时间轴解码与评测代码。
+Chinese version: [README_CN.md](README_CN.md)
 
-本仓库默认提供低显存的 `reference-event input` 运行方式：不训练或加载
-Llama/QLoRA，而是将每个数据划分中的 reference events 转换为标准 Mention
-输入。训练划分会确定性加入来自其他实体的 reference-event 干扰项，由原有的
-全约束可靠负例筛选逻辑决定哪些样本可以作为负例。
+`mecta` is a standalone repository for constrained timeline generation experiments. It includes the CREST and WCEP-CTG datasets in a unified format, together with code for data loading, event clustering, Stage-II supervision construction, cross-encoder training, semantic-score fusion, timeline decoding, and evaluation.
 
-开发集和测试集使用了对应划分的 reference events，因此该运行方式衡量的是
-聚类、约束分配、排序和解码能力，不是端到端的文档事件抽取能力。运行产生的
-元数据会保留 `uses_partition_references: true`，便于复核实验口径。
+This repository provides a low-GPU-memory `reference-event input` mode by default. In this mode, Llama/QLoRA is neither trained nor loaded. Instead, the reference events from each data split are converted into standard Mention inputs. For the training split, deterministic distractors derived from the reference events of other entities are added, and the existing all-constraint reliable-negative filtering logic determines which examples can be used as negative samples.
 
-## 目录
+The development and test splits use the reference events belonging to their respective splits. Consequently, this mode evaluates event clustering, constraint-aware assignment, ranking, and timeline decoding; it does not evaluate end-to-end event extraction from documents. Generated run metadata retains `uses_partition_references: true` so that the experimental setup remains explicit and auditable.
+
+## Repository Structure
 
 ```text
-configs/                 CREST 与 WCEP-CTG 配置
-dataset/                 两个数据集
-mecta/                   核心 Python 包
-scripts/                 各阶段命令行入口
-tests/                   离线单元测试
-REFERENCE_INPUT.md       reference-event 输入模式说明
-requirements.txt         Python 依赖
-run_all.sh               单数据集完整运行入口
+configs/                 Configurations for CREST and WCEP-CTG
+dataset/                 The two datasets
+mecta/                   Core Python package
+scripts/                 Command-line entry points for each stage
+tests/                   Offline unit tests
+REFERENCE_INPUT.md       Documentation for reference-event input mode
+requirements.txt         Python dependencies
+run_all.sh               End-to-end entry point for one dataset
 ```
 
-实验输出默认写入 `runs/`，该目录被 Git 忽略，仓库中不包含本地实验结果、
-检查点或缓存。
+Experiment outputs are written to `runs/` by default. This directory is ignored by Git, and the repository does not include local experiment results, checkpoints, or cache files.
 
-## 数据集
+## Datasets
 
 ```text
 dataset/
@@ -45,34 +39,31 @@ dataset/
     └── statistics/
 ```
 
-两个数据集均由 `mecta.data.DatasetReader` 通过统一接口读取。数据的继续分发和
-使用应遵循其原始来源对应的许可与条款。
+Both datasets are loaded through a unified interface provided by `mecta.data.DatasetReader`. Any redistribution or use of the datasets must comply with the licenses and terms of their original sources.
 
-## 环境
+## Environment Setup
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-配置默认使用本地 GTE 与 MiniLM 模型。运行前请在
-`configs/crest.yaml` 和 `configs/wcep_ctg.yaml` 中调整模型路径。
-`--reference-input` 模式不会读取配置中的 Llama 基座模型。
+The default configurations use local GTE and MiniLM models. Before running the pipeline, update the model paths in `configs/crest.yaml` and `configs/wcep_ctg.yaml` as needed. The Llama base-model path in the configuration is not accessed when `--reference-input` mode is enabled.
 
-## 运行
+## Running the Pipeline
 
-CREST：
+CREST:
 
 ```bash
 PYTHON_BIN=python GPU_INDEX=0 ./run_all.sh crest runs/crest_reference_input
 ```
 
-WCEP-CTG：
+WCEP-CTG:
 
 ```bash
 PYTHON_BIN=python GPU_INDEX=0 ./run_all.sh wcep_ctg runs/wcep_ctg_reference_input
 ```
 
-Windows PowerShell 示例：
+Windows PowerShell example:
 
 ```powershell
 python scripts/run_pipeline.py `
@@ -82,7 +73,7 @@ python scripts/run_pipeline.py `
   --reference-input
 ```
 
-只进行数据、划分和路径预检：
+To validate only the dataset structure, data splits, and configured paths:
 
 ```bash
 python scripts/run_pipeline.py \
@@ -91,20 +82,20 @@ python scripts/run_pipeline.py \
   --reference-input
 ```
 
-## 测试
+## Tests
 
 ```bash
 python -m pytest -q
 ```
 
-## 流水线
+## Pipeline
 
-在 `--reference-input` 模式下，`prepare_stage1` 与 `train_stage1` 会被跳过：
+When `--reference-input` mode is enabled, the `prepare_stage1` and `train_stage1` stages are skipped:
 
-1. 将 train/development/test reference events 写成 Mention 数据；
-2. 对三个划分分别执行同日完整链接聚类；
-3. 使用训练集 reference timelines 构造 Stage-II 正例和可靠负例；
-4. 训练 MiniLM 交叉编码器并在开发集选择轮次；
-5. 融合交叉编码器分数与 GTE 直接语义分数；
-6. 按时间轴预算解码测试候选并评测；
-7. 写出零 LLM 调用、零 token 的成本记录。
+1. Convert the train, development, and test reference events into Mention records.
+2. Perform same-day complete-linkage clustering independently for all three splits.
+3. Construct Stage-II positive examples and reliable negative examples from the training reference timelines.
+4. Train the MiniLM cross-encoder and select the training epoch on the development split.
+5. Fuse the cross-encoder scores with the direct GTE semantic-similarity scores.
+6. Decode the test candidates under the timeline budgets and evaluate the resulting timelines.
+7. Write a cost record reporting zero LLM calls and zero processed tokens.
