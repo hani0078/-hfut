@@ -157,21 +157,6 @@ def test_perfect_timeline_has_unit_metrics() -> None:
     assert metrics["date_f1"] == 1.0
 
 
-def test_cost_report_averages_by_all_test_topics() -> None:
-    from mecta.cost import summarize_cost
-
-    records = (
-        {"entity_id": "a", "article_id": "1", "input_tokens": 10, "output_tokens": 2},
-        {"entity_id": "a", "article_id": "2", "input_tokens": 20, "output_tokens": 4},
-        {"entity_id": "b", "article_id": "3", "input_tokens": 30, "output_tokens": 6},
-    )
-    row = summarize_cost(records, ("a", "b"), "mecta", "CREST")
-    assert row["calls"] == 1.5
-    assert row["input_tokens"] == 30
-    assert row["output_tokens"] == 6
-    assert row["calls_per_article"] == 1.0
-
-
 def test_stage1_target_deduplicates_across_constraints() -> None:
     from mecta.schema import ReferenceEvent
     from mecta.stage1_data import deduplicate_references

@@ -18,7 +18,6 @@ STAGE_NAMES = (
     "score_test",
     "build_test_timelines",
     "evaluate_test",
-    "report_cost",
 )
 
 
@@ -53,7 +52,6 @@ def artifact_paths(run_dir: str | Path) -> dict[str, Path]:
         "scores": root / "scores",
         "timelines": root / "timelines",
         "evaluation": root / "evaluation",
-        "cost": root / "cost",
         "logs": root / "logs",
     }
 

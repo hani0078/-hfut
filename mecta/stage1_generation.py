@@ -86,13 +86,6 @@ class ParseResult:
     recovered: bool = False
 
 
-@dataclass(frozen=True, slots=True)
-class GenerationOutput:
-    text: str
-    input_tokens: int
-    output_tokens: int
-
-
 class Generator(Protocol):
     def generate_batch(
         self,
@@ -101,7 +94,7 @@ class Generator(Protocol):
         max_input_tokens: int,
         max_new_tokens: int,
         temperature: float,
-    ) -> Sequence[GenerationOutput | str]: ...
+    ) -> Sequence[str]: ...
 
 
 class InputTooLongError(ValueError):
@@ -204,7 +197,7 @@ def parse_generation_response(response: object) -> ParseResult:
 
 
 class LocalAdapterGenerator:
-    """Local BF16 base model plus a PEFT adapter, with exact token accounting."""
+    """Local BF16 base model with a PEFT adapter."""
 
     def __init__(
         self,
@@ -253,7 +246,7 @@ class LocalAdapterGenerator:
         max_input_tokens: int,
         max_new_tokens: int,
         temperature: float,
-    ) -> Sequence[GenerationOutput]:
+    ) -> Sequence[str]:
         rendered = [
             self.tokenizer.apply_chat_template(
                 list(messages), tokenize=False, add_generation_prompt=True
@@ -308,48 +301,31 @@ class LocalAdapterGenerator:
         with self._torch.inference_mode():
             generated = self.model.generate(**prepared, **arguments)
 
-        outputs: list[GenerationOutput] = []
+        outputs: list[str] = []
         eos_id = self.tokenizer.eos_token_id
         pad_id = self.tokenizer.pad_token_id
-        for index, input_length in enumerate(input_lengths):
+        for index in range(len(input_lengths)):
             raw_ids = [int(item) for item in generated[index, input_width:].tolist()]
             content_ids: list[int] = []
-            output_tokens = 0
             for token_id in raw_ids:
                 if eos_id is not None and token_id == eos_id:
-                    # final_table counts the model-emitted terminator even though
-                    # it is omitted from decoded text.
-                    output_tokens += 1
                     break
                 if pad_id is not None and token_id == pad_id:
                     break
                 content_ids.append(token_id)
-                output_tokens += 1
             outputs.append(
-                GenerationOutput(
-                    text=self.tokenizer.decode(
-                        content_ids, skip_special_tokens=True
-                    ).strip(),
-                    input_tokens=input_length,
-                    output_tokens=output_tokens,
-                )
+                self.tokenizer.decode(
+                    content_ids, skip_special_tokens=True
+                ).strip()
             )
         return tuple(outputs)
-
-
-def _as_output(value: GenerationOutput | str) -> GenerationOutput:
-    if isinstance(value, GenerationOutput):
-        return value
-    if isinstance(value, str):
-        return GenerationOutput(value, 0, 0)
-    raise TypeError("generator outputs must be strings or GenerationOutput records")
 
 
 def _invoke_batch(
     generator: Any,
     messages: Sequence[Sequence[Mapping[str, str]]],
     settings: GenerationSettings,
-) -> tuple[GenerationOutput, ...]:
+) -> tuple[str, ...]:
     arguments = {
         "max_input_tokens": settings.max_input_tokens,
         "max_new_tokens": settings.max_new_tokens,
@@ -361,11 +337,13 @@ def _invoke_batch(
         values = [generator.generate(item, **arguments) for item in messages]
     else:
         raise TypeError("generator must expose generate_batch or generate")
-    resolved = tuple(_as_output(value) for value in values)
+    resolved = tuple(values)
     if len(resolved) != len(messages):
         raise ValueError(
             f"generator returned {len(resolved)} responses for {len(messages)} prompts"
         )
+    if any(not isinstance(value, str) for value in resolved):
+        raise TypeError("generator outputs must be strings")
     return resolved
 
 
@@ -379,7 +357,7 @@ def generate_partition(
     seed: int,
     progress_callback: Callable[[int, int], None] | None = None,
 ) -> dict[str, Any]:
-    """Generate one logical call per complete article and write entity JSONL files."""
+    """Generate mentions from complete articles and write entity JSONL files."""
 
     output = Path(output_dir)
     if output.exists():
@@ -411,7 +389,6 @@ def generate_partition(
         else:
             articles[entity_id] = tuple(ordered)
     all_mentions: dict[str, list[Mention]] = {entity_id: [] for entity_id in entity_ids}
-    call_records: list[dict[str, Any]] = []
     failure_rows: list[dict[str, Any]] = []
     status_counts: Counter[str] = Counter()
     seen_mentions: set[str] = set()
@@ -444,7 +421,7 @@ def generate_partition(
                     f"{details}"
                 ) from error
             for article, response in zip(article_batch, responses, strict=True):
-                parsed = parse_generation_response(response.text)
+                parsed = parse_generation_response(response)
                 status_counts[parsed.status] += 1
                 for event in parsed.events:
                     mention_id = stable_id(
@@ -477,20 +454,6 @@ def generate_partition(
                     if failure.detail is not None:
                         row["detail"] = failure.detail
                     failure_rows.append(row)
-                call_records.append(
-                    {
-                        "entity_id": entity_id,
-                        "article_id": article.article_id,
-                        "partition": partition,
-                        "call_count": 1,
-                        "input_tokens": response.input_tokens,
-                        "output_tokens": response.output_tokens,
-                        "parse_status": parsed.status,
-                        "parsed_events": len(parsed.events),
-                        "failure_reasons": [item.reason for item in parsed.failures],
-                        "raw_response": response.text,
-                    }
-                )
                 completed += 1
                 if progress_callback is not None:
                     progress_callback(completed, total)
@@ -509,19 +472,15 @@ def generate_partition(
             ),
         )
         write_jsonl(output / f"{entity_id}.jsonl", (item.to_dict() for item in mentions))
-    write_jsonl(metadata / "call_records.jsonl", call_records)
     write_jsonl(metadata / "parse_failures.jsonl", failure_rows)
     summary = {
         "partition": partition,
         "entities": list(entity_ids),
         "raw_articles": raw_total,
         "articles": total,
-        "logical_calls": len(call_records),
         "mentions": sum(len(values) for values in all_mentions.values()),
         "parse_failures": len(failure_rows),
         "parse_statuses": dict(sorted(status_counts.items())),
-        "input_tokens": sum(int(row["input_tokens"]) for row in call_records),
-        "output_tokens": sum(int(row["output_tokens"]) for row in call_records),
         "settings": {
             "max_input_tokens": settings.max_input_tokens,
             "max_new_tokens": settings.max_new_tokens,
@@ -537,7 +496,6 @@ def generate_partition(
 
 
 __all__ = [
-    "GenerationOutput",
     "GenerationSettings",
     "Generator",
     "InputTooLongError",

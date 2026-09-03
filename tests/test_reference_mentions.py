@@ -97,11 +97,6 @@ def test_train_reference_mentions_include_deterministic_cross_entity_pool(
     ).read_bytes()
     assert read_json(first / "_meta" / "summary.json") == summary
 
-    cost_rows = tuple(iter_jsonl(first / "_meta" / "call_records.jsonl"))
-    assert len(cost_rows) == 2
-    assert all(row["call_count"] == 0 for row in cost_rows)
-    assert all(row["input_tokens"] == row["output_tokens"] == 0 for row in cost_rows)
-
 
 def test_non_train_reference_mentions_do_not_include_distractors(tmp_path: Path) -> None:
     from mecta.io import iter_jsonl

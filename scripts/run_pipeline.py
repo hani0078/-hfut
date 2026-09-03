@@ -271,20 +271,6 @@ def _handlers(
             ),
         )
 
-    def report_cost() -> None:
-        command_stage(
-            "report_cost",
-            _command(
-                "report_token_cost.py",
-                "--config",
-                config_path,
-                "--call-records",
-                paths["mentions"] / "test" / "_meta" / "call_records.jsonl",
-                "--output",
-                paths["cost"] / "final_table.json",
-            ),
-        )
-
     handlers = {
         "prepare_stage1": prepare_stage1,
         "train_stage1": train_stage1,
@@ -298,7 +284,6 @@ def _handlers(
         "score_test": score_test,
         "build_test_timelines": build_test_timelines,
         "evaluate_test": evaluate_test,
-        "report_cost": report_cost,
     }
     complete = {
         "prepare_stage1": lambda: (paths["stage1_data"] / "train.jsonl").is_file(),
@@ -315,7 +300,6 @@ def _handlers(
         "score_test": lambda: (paths["scores"] / "test" / "predictions.jsonl").is_file(),
         "build_test_timelines": lambda: (paths["timelines"] / "test_predictions.jsonl").is_file(),
         "evaluate_test": lambda: (paths["evaluation"] / "test_metrics.json").is_file(),
-        "report_cost": lambda: (paths["cost"] / "final_table.json").is_file(),
     }
     return handlers, complete
 

@@ -237,25 +237,9 @@ def materialize_reference_mentions(
             "mentions": len(mentions),
         }
 
-    call_records: list[dict[str, Any]] = []
-    raw_article_count = 0
-    for entity_id in entity_ids:
-        articles = tuple(reader.articles(entity_id))
-        raw_article_count += len(articles)
-        for article in articles:
-            call_records.append(
-                {
-                    "entity_id": entity_id,
-                    "article_id": article.article_id,
-                    "partition": partition,
-                    "call_count": 0,
-                    "input_tokens": 0,
-                    "output_tokens": 0,
-                    "parse_status": "not_run_reference_event_input",
-                    "parsed_events": 0,
-                    "failure_reasons": [],
-                }
-            )
+    raw_article_count = sum(
+        len(reader.articles(entity_id)) for entity_id in entity_ids
+    )
 
     provenance_rows.sort(
         key=lambda row: (
@@ -266,7 +250,6 @@ def materialize_reference_mentions(
         )
     )
     write_jsonl(metadata / "reference_provenance.jsonl", provenance_rows)
-    write_jsonl(metadata / "call_records.jsonl", call_records)
     write_jsonl(metadata / "parse_failures.jsonl", ())
     summary = {
         "dataset": reader.dataset,
@@ -274,14 +257,11 @@ def materialize_reference_mentions(
         "entities": list(entity_ids),
         "raw_articles": raw_article_count,
         "articles": raw_article_count,
-        "logical_calls": 0,
         "mentions": total_primary + total_distractors,
         "partition_reference_mentions": total_primary,
         "cross_entity_training_distractors": total_distractors,
         "parse_failures": 0,
         "parse_statuses": {"not_run_reference_event_input": raw_article_count},
-        "input_tokens": 0,
-        "output_tokens": 0,
         "source": "partition_reference_events",
         "uses_partition_references": True,
         "cross_entity_distractors_train_only": True,

@@ -98,4 +98,3 @@ When `--reference-input` mode is enabled, the `prepare_stage1` and `train_stage1
 4. Train the MiniLM cross-encoder and select the training epoch on the development split.
 5. Fuse the cross-encoder scores with the direct GTE semantic-similarity scores.
 6. Decode the test candidates under the timeline budgets and evaluate the resulting timelines.
-7. Write a cost record reporting zero LLM calls and zero processed tokens.

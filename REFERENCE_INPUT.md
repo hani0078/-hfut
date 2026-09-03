@@ -30,18 +30,16 @@ screen decides which distractors are retained as negatives.
 
 Development and test receive no cross-entity distractors.
 
-## Provenance and cost
+## Provenance
 
 Each partition writes:
 
 ```text
 mentions/<partition>/<entity>.jsonl
 mentions/<partition>/_meta/reference_provenance.jsonl
-mentions/<partition>/_meta/call_records.jsonl
 mentions/<partition>/_meta/parse_failures.jsonl
 mentions/<partition>/_meta/summary.json
 ```
 
-No language model or adapter is loaded. Call records contain zero calls and
-zero input/output tokens. GTE and the MiniLM cross-encoder are still used by
-the downstream stages.
+No language model or adapter is loaded. GTE and the MiniLM cross-encoder are
+still used by the downstream stages.
