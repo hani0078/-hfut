@@ -24,6 +24,9 @@ from mecta.io import read_json, write_json  # noqa: E402
 from mecta.pipeline import STAGE_NAMES, artifact_paths, preflight, select_stages  # noqa: E402
 
 
+RUN_MANIFEST = {"schema_version": 1, "workflow": "article_generation"}
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run the independent mecta experiment from raw data to timelines"
@@ -35,14 +38,6 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--stop-after", choices=STAGE_NAMES)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--check-only", action="store_true")
-    parser.add_argument(
-        "--reference-input",
-        action="store_true",
-        help=(
-            "skip Stage-I preparation/training and materialize partition "
-            "reference events through the standard Mention contract"
-        ),
-    )
     return parser.parse_args(argv)
 
 
@@ -83,13 +78,36 @@ def _all_exist(*paths: Path) -> bool:
     return all(path.exists() for path in paths)
 
 
+def _prepare_run_directory(run_dir: Path, *, resume: bool) -> None:
+    manifest_path = run_dir / "run_manifest.json"
+    if run_dir.exists() and any(run_dir.iterdir()):
+        if not resume:
+            raise FileExistsError(
+                f"run directory is not empty; use --resume to continue: {run_dir}"
+            )
+        try:
+            manifest = read_json(manifest_path)
+        except (OSError, ValueError) as exc:
+            raise ValueError(
+                "Cannot resume a run without a valid article-generation manifest. "
+                "Start the complete pipeline in a new --run-dir."
+            ) from exc
+        if manifest != RUN_MANIFEST:
+            raise ValueError(
+                "Cannot resume a run with an incompatible article-generation manifest. "
+                "Start the complete pipeline in a new --run-dir."
+            )
+        return
+    run_dir.mkdir(parents=True, exist_ok=True)
+    write_json(manifest_path, RUN_MANIFEST)
+
+
 def _handlers(
     config_path: Path,
     run_dir: Path,
     device: str,
     *,
     resume: bool,
-    reference_input: bool,
 ) -> tuple[dict[str, Callable[[], None]], dict[str, Callable[[], bool]]]:
     paths = artifact_paths(run_dir)
     logs = paths["logs"]
@@ -129,20 +147,6 @@ def _handlers(
 
     def generate(partition: str) -> None:
         stage = f"generate_{partition}"
-        if reference_input:
-            command_stage(
-                stage,
-                _command(
-                    "materialize_reference_mentions.py",
-                    "--config",
-                    config_path,
-                    "--output-dir",
-                    paths["mentions"] / partition,
-                    "--partition",
-                    partition,
-                ),
-            )
-            return
         command_stage(
             stage,
             _command(
@@ -316,12 +320,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if (args.from_stage or args.stop_after) and not args.resume and args.from_stage:
         raise ValueError("--from-stage requires --resume")
 
+    stages = select_stages(args.from_stage, args.stop_after)
     run_dir = Path(args.run_dir).expanduser().resolve()
-    if run_dir.exists() and any(run_dir.iterdir()) and not args.resume:
-        raise FileExistsError(
-            f"run directory is not empty; use --resume to continue: {run_dir}"
-        )
-    run_dir.mkdir(parents=True, exist_ok=True)
+    _prepare_run_directory(run_dir, resume=args.resume)
     frozen_config = run_dir / "config.yaml"
     if not frozen_config.exists():
         shutil.copyfile(config_path, frozen_config)
@@ -330,24 +331,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_dir,
         args.device,
         resume=args.resume,
-        reference_input=args.reference_input,
     )
-    stages = select_stages(args.from_stage, args.stop_after)
-    if args.reference_input:
-        stages = tuple(
-            stage
-            for stage in stages
-            if stage not in {"prepare_stage1", "train_stage1"}
-        )
-        write_json(
-            run_dir / "input_mode.json",
-            {
-                "mode": "reference_event_input",
-                "uses_partition_references": True,
-                "training_cross_entity_distractors": True,
-                "language_model_loaded": False,
-            },
-        )
     for stage in stages:
         if args.resume and complete[stage]():
             print(f"SKIP {stage}: output already exists", flush=True)

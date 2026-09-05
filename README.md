@@ -2,11 +2,11 @@
 
 Chinese version: [README_CN.md](README_CN.md)
 
-`mecta` is a standalone repository for constrained timeline generation experiments. It includes the CREST and WCEP-CTG datasets in a unified format, together with code for data loading, event clustering, Stage-II supervision construction, cross-encoder training, semantic-score fusion, timeline decoding, and evaluation.
-
-This repository provides a low-GPU-memory `reference-event input` mode by default. In this mode, Llama/QLoRA is neither trained nor loaded. Instead, the reference events from each data split are converted into standard Mention inputs. For the training split, deterministic distractors derived from the reference events of other entities are added, and the existing all-constraint reliable-negative filtering logic determines which examples can be used as negative samples.
-
-The development and test splits use the reference events belonging to their respective splits. Consequently, this mode evaluates event clustering, constraint-aware assignment, ranking, and timeline decoding; it does not evaluate end-to-end event extraction from documents. Generated run metadata retains `uses_partition_references: true` so that the experimental setup remains explicit and auditable.
+`mecta` implements the complete constrained timeline generation workflow for
+CREST and WCEP-CTG: prepare Stage-I supervision, train a Llama QLoRA adapter,
+generate events from articles, cluster candidates, train the Stage-II
+cross-encoder, select settings on development data, and evaluate test timelines.
+Both entry points, `run_all.sh` and `scripts/run_pipeline.py`, run this workflow.
 
 ## Repository Structure
 
@@ -16,14 +16,15 @@ dataset/                 The two datasets
 mecta/                   Core Python package
 scripts/                 Command-line entry points for each stage
 tests/                   Offline unit tests
-REFERENCE_INPUT.md       Documentation for reference-event input mode
 requirements.txt         Python dependencies
-run_all.sh               End-to-end entry point for one dataset
+run_all.sh               Complete workflow for one dataset
 ```
 
-Experiment outputs are written to `runs/` by default. This directory is ignored by Git, and the repository does not include local experiment results, checkpoints, or cache files.
+Local pretrained model weights belong in `models/` or another configured local
+directory. Experiment outputs go to `runs/` by default. Weights, run outputs,
+trained checkpoints, and caches are not included in the repository.
 
-## Datasets
+## Datasets and Experimental Protocol
 
 ```text
 dataset/
@@ -39,62 +40,175 @@ dataset/
     └── statistics/
 ```
 
-Both datasets are loaded through a unified interface provided by `mecta.data.DatasetReader`. Any redistribution or use of the datasets must comply with the licenses and terms of their original sources.
+`mecta.data.DatasetReader` exposes the splits as `train`, `development`, and
+`test`; `development` corresponds to the on-disk `validation/` split. Any
+redistribution or use of the datasets must comply with the licenses and terms
+of their original sources.
 
-## Environment Setup
+Stage-I supervision uses training articles and their gold timelines. The trained
+adapter then generates Mention records independently for each split using article
+text and the requested constraints. These generated mentions supply the candidate
+text for clustering and timeline construction. Stage-II supervision uses training
+candidates and training gold timelines. Checkpoint and fusion selection use the
+development split; final metrics compare test predictions with test gold timelines.
+
+The configured decoding protocol uses
+`decoding.budget_source: reference_event_count`: the number of gold events for each
+requested timeline sets its output-length budget, including on development and test
+data. Gold event text supplies supervision and evaluation targets; it is not
+converted into generated candidate text. Keep this budget assumption explicit when
+reporting results.
+
+## Environment and Models
+
+Use Python 3.10 or 3.11 and a CUDA environment that supports BF16 and
+bitsandbytes NF4 training. Install the pinned dependencies from the repository
+root:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-The default configurations use local GTE and MiniLM models. Before running the pipeline, update the model paths in `configs/crest.yaml` and `configs/wcep_ctg.yaml` as needed. The Llama base-model path in the configuration is not accessed when `--reference-input` mode is enabled.
+The dependency file includes PyTorch, Transformers, PEFT, Accelerate,
+bitsandbytes, and TILSE. Stage-I training uses 4-bit QLoRA with BF16 computation;
+generation loads the Llama base model and its trained adapter in BF16. Provision
+GPU memory for that full model and the configured article length and batch size.
+Stage-I training requests FlashAttention 2 and falls back to PyTorch SDPA when
+that backend cannot be loaded; `flash-attn` is optional with the supplied fallback.
 
-## Running the Pipeline
+Prepare complete local model directories with weights, configurations, and
+tokenizer files. Model loading uses `local_files_only=True`; the workflow does
+not download weights. The supplied configurations resolve these paths relative
+to the YAML file:
 
-CREST:
+| Configuration key | Default local directory | Purpose |
+| --- | --- | --- |
+| `paths.base_model` | `../models/Meta-Llama-3.1-8B-Instruct` | Stage-I training and article generation |
+| `paths.gte_model` | `../models/gte-large` | Semantic retrieval, clustering, supervision, and direct scores |
+| `paths.cross_encoder_model` | `../models/ms-marco-MiniLM-L-6-v2` | Stage-II cross-encoder initialization |
+
+Place the models under the repository's `models/` directory or edit these paths
+in [configs/crest.yaml](configs/crest.yaml) and
+[configs/wcep_ctg.yaml](configs/wcep_ctg.yaml). Absolute paths are also accepted.
+Record the actual model versions and any configuration changes with an experiment.
+Stage-I training and generation preserve full article inputs and fail on inputs
+that exceed their configured token limits.
+
+## Run the Complete Workflow
+
+Run commands from the repository root. Start each new experiment in a new or
+empty run directory. A complete run trains both stages and generates events for
+all three splits.
+
+CREST, using Bash:
 
 ```bash
-PYTHON_BIN=python GPU_INDEX=0 ./run_all.sh crest runs/crest_reference_input
+PYTHON_BIN=python GPU_INDEX=0 bash run_all.sh crest runs/crest_full
 ```
 
-WCEP-CTG:
+WCEP-CTG, using Bash:
 
 ```bash
-PYTHON_BIN=python GPU_INDEX=0 ./run_all.sh wcep_ctg runs/wcep_ctg_reference_input
+PYTHON_BIN=python GPU_INDEX=0 bash run_all.sh wcep_ctg runs/wcep_ctg_full
 ```
 
-Windows PowerShell example:
+The optional run-directory argument defaults to `runs/<dataset>_full` under the
+repository root. `GPU_INDEX` selects the GPU exposed to the Bash launcher.
+
+Direct Python entry point, including Windows PowerShell:
 
 ```powershell
 python scripts/run_pipeline.py `
   --config configs/crest.yaml `
-  --run-dir runs/crest_reference_input `
-  --device cuda:0 `
-  --reference-input
+  --run-dir runs/crest_full `
+  --device cuda:0
 ```
 
-To validate only the dataset structure, data splits, and configured paths:
+For WCEP-CTG, use `configs/wcep_ctg.yaml` and a separate run directory. The
+PowerShell example requires the same CUDA and model setup as the Bash commands.
+
+Check dataset structure, splits, and local model directories before training:
 
 ```bash
-python scripts/run_pipeline.py \
-  --config configs/crest.yaml \
-  --check-only \
-  --reference-input
+python scripts/run_pipeline.py --config configs/crest.yaml --check-only
+python scripts/run_pipeline.py --config configs/wcep_ctg.yaml --check-only
 ```
 
-## Tests
+This preflight reads the datasets and checks that configured directories exist.
+It does not load model weights, test GPU compatibility, or run experiments.
+
+## Stages and Resumption
+
+`scripts/run_pipeline.py` executes these stages in order:
+
+| Stage | Work performed |
+| --- | --- |
+| `prepare_stage1` | Align training gold events to training articles and write full-document SFT records. |
+| `train_stage1` | Train the Llama QLoRA adapter and save `models/stage1/final_adapter/`. |
+| `generate_train` | Generate event mentions from training articles with that adapter. |
+| `generate_development` | Generate event mentions from development articles with the same adapter. |
+| `generate_test` | Generate event mentions from test articles with the same adapter. |
+| `cluster_all` | Cluster same-day mentions with complete linkage, independently for all splits. |
+| `prepare_stage2` | Build training positives and reliable negatives screened across all constraints. |
+| `train_stage2` | Train MiniLM trials and select checkpoints and fusion settings using development metrics. |
+| `select_development` | Copy the selected Stage-II configuration into `selection/selected_config.json`. |
+| `score_test` | Score test candidates, fuse cross-encoder and GTE scores, and decode with the selected settings. |
+| `build_test_timelines` | Export the decoded predictions as JSONL and in the CREST timeline layout. |
+| `evaluate_test` | Write TILSE ROUGE-1/ROUGE-2 and date precision, recall, and F1 metrics. |
+
+The supplied fusion grids contain a single cross-encoder weight, `0.50`.
+Development selection considers the checkpoints and settings configured for each
+dataset; test data are not used to choose the checkpoint or fusion weight.
+
+To run through Stage-I training and continue later, use a separate run directory:
+
+```bash
+python scripts/run_pipeline.py --config configs/crest.yaml --run-dir runs/crest_staged --device cuda:0 --stop-after train_stage1
+python scripts/run_pipeline.py --config configs/crest.yaml --run-dir runs/crest_staged --device cuda:0 --resume --from-stage generate_train
+```
+
+For an existing run, `--resume` skips stages whose expected output files already
+exist. `--from-stage` requires `--resume` and assumes that earlier stages have
+finished. Resume requires a compatible `run_manifest.json` written by this
+workflow. Use a fresh directory for a new experiment and keep the configuration,
+datasets, and model files consistent when continuing an existing run.
+
+Pipeline resumption does not automatically restore an interrupted training
+optimizer. To continue Stage-I training from a saved checkpoint, replace
+`checkpoint-STEP` below with an existing checkpoint directory:
+
+```bash
+python scripts/train_stage1.py --config configs/crest.yaml --train-file runs/crest_staged/stage1_data/train.jsonl --output-dir runs/crest_staged/models/stage1 --device cuda:0 --resume-from-checkpoint runs/crest_staged/models/stage1/checkpoints/checkpoint-STEP
+```
+
+Once the final adapter is saved, continue with the pipeline's `--resume` command.
+
+## Outputs and Verification
+
+Each run retains its configuration copy, workflow manifest, and stage logs.
+Useful artifacts under the run directory include:
+
+| Path | Contents |
+| --- | --- |
+| `stage1_data/` | Training records, article alignments, and supervision summary |
+| `models/stage1/` | QLoRA checkpoints, final adapter, and training summary |
+| `mentions/<split>/` | Article-generated event mentions and parsing metadata in `_meta/` |
+| `candidates/<split>/` | Clustered candidates and clustering summary |
+| `stage2_data/train.jsonl` | Stage-II supervised training pairs |
+| `models/cross_encoder/` | Trial checkpoints and development selection results |
+| `selection/selected_config.json` | Checkpoint and fusion settings used for test scoring |
+| `scores/test/` | Cross-encoder, direct, and fused scores; decoded predictions |
+| `timelines/test_predictions.jsonl` | Final test predictions |
+| `timelines/crest/` | One-file-per-timeline export |
+| `evaluation/test_metrics.json` | Final test evaluation metrics |
+| `logs/` | Per-stage command output |
+
+Run the offline tests with:
 
 ```bash
 python -m pytest -q
 ```
 
-## Pipeline
-
-When `--reference-input` mode is enabled, the `prepare_stage1` and `train_stage1` stages are skipped:
-
-1. Convert the train, development, and test reference events into Mention records.
-2. Perform same-day complete-linkage clustering independently for all three splits.
-3. Construct Stage-II positive examples and reliable negative examples from the training reference timelines.
-4. Train the MiniLM cross-encoder and select the training epoch on the development split.
-5. Fuse the cross-encoder scores with the direct GTE semantic-similarity scores.
-6. Decode the test candidates under the timeline budgets and evaluate the resulting timelines.
+The tests check software behavior with fixtures and mocks. Validating experiment
+results requires completing training, generation, and evaluation with the actual
+datasets and model weights, then inspecting the saved artifacts and metrics.

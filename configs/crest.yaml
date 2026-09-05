@@ -2,16 +2,12 @@ dataset: crest
 method_name: mecta
 seed: 42
 
-reference_input:
-  train_cross_entity_distractor_ratio: 2.0
-  min_train_cross_entity_distractors: 32
-
 paths:
   data_root: ../dataset/crest_split
   constraints: ../dataset/crest_split/constraint_dict.json
-  base_model: D:/LLM_backup/Meta-Llama-3.1-8B-Instruct
-  gte_model: D:/LLM_backup/gtelarge
-  cross_encoder_model: D:/LLM_backup/models--cross-encoder--ms-marco-MiniLM-L-6-v2/snapshots/233902d25c440f23af6f7d6e94d2946bac0bee0a
+  base_model: ../models/Meta-Llama-3.1-8B-Instruct
+  gte_model: ../models/gte-large
+  cross_encoder_model: ../models/ms-marco-MiniLM-L-6-v2
 
 embedding:
   batch_size: 32

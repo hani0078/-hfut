@@ -15,7 +15,7 @@ case "$dataset" in
   crest|wcep_ctg) ;;
   *) echo "Dataset must be crest or wcep_ctg" >&2; exit 2 ;;
 esac
-run_dir="${2:-$project_root/runs/${dataset}_reference_input}"
+run_dir="${2:-$project_root/runs/${dataset}_full}"
 
 export CUDA_VISIBLE_DEVICES="$gpu_index"
 export PYTHONUNBUFFERED=1
@@ -25,5 +25,4 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 exec "$python_bin" "$project_root/scripts/run_pipeline.py" \
   --config "$project_root/configs/$dataset.yaml" \
   --run-dir "$run_dir" \
-  --device cuda:0 \
-  --reference-input
+  --device cuda:0
