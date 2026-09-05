@@ -7,8 +7,8 @@ import pytest
 
 
 def test_config_resolves_paths_and_schema_round_trip(tmp_path: Path) -> None:
-    from mecta.config import load_config
-    from mecta.schema import Event
+    from pooltls.config import load_config
+    from pooltls.schema import Event
 
     config_file = tmp_path / "config.yaml"
     config_file.write_text(
@@ -23,14 +23,14 @@ def test_config_resolves_paths_and_schema_round_trip(tmp_path: Path) -> None:
 
 
 def test_word_f1_uses_lowercase_alphanumeric_multisets() -> None:
-    from mecta.text import word_f1
+    from pooltls.text import word_f1
 
     assert word_f1("Aid aid arrives", "aid arrives") == 0.8
     assert word_f1("", "aid") == 0.0
 
 
 def test_stage_slice_is_inclusive_and_ordered() -> None:
-    from mecta.pipeline import STAGE_NAMES, select_stages
+    from pooltls.pipeline import STAGE_NAMES, select_stages
 
     selected = select_stages("generate_train", "prepare_stage2")
     assert selected[0] == "generate_train"
@@ -47,8 +47,8 @@ class FakeEncoder:
 
 
 def test_complete_link_blocks_chain_merge() -> None:
-    from mecta.consolidation import consolidate_mentions
-    from mecta.schema import Mention
+    from pooltls.consolidation import consolidate_mentions
+    from pooltls.schema import Mention
 
     mentions = (
         Mention("u", "a", "a1", "2020-01-01", "alpha"),
@@ -73,8 +73,8 @@ def test_complete_link_blocks_chain_merge() -> None:
 
 
 def test_global_negative_screening_preserves_other_constraint_pair() -> None:
-    from mecta.schema import Candidate, Constraint, ReferenceEvent
-    from mecta.supervision import build_supervision
+    from pooltls.schema import Candidate, Constraint, ReferenceEvent
+    from pooltls.supervision import build_supervision
 
     candidate = Candidate("u", "c0", "2020-01-01", "shared event")
     constraints = tuple(Constraint("u", str(index), f"constraint {index}") for index in range(5))
@@ -99,15 +99,15 @@ def test_global_negative_screening_preserves_other_constraint_pair() -> None:
 
 
 def test_percentile_rank_uses_average_ties_per_constraint() -> None:
-    from mecta.ranking import percentile_ranks
+    from pooltls.ranking import percentile_ranks
 
     ranked = percentile_ranks(np.array([[1.0, 4.0], [1.0, 2.0], [3.0, 1.0]]))
     np.testing.assert_allclose(ranked[:, 0], [0.5, 0.5, 1.0])
 
 
 def test_decode_uses_budget_and_allows_cross_timeline_sharing() -> None:
-    from mecta.schema import Candidate, Constraint
-    from mecta.timeline import build_timelines
+    from pooltls.schema import Candidate, Constraint
+    from pooltls.timeline import build_timelines
 
     candidates = {"u": (Candidate("u", "c0", "2020-01-01", "best"),)}
     constraints = {
@@ -128,8 +128,8 @@ def test_decode_uses_budget_and_allows_cross_timeline_sharing() -> None:
 
 
 def test_perfect_timeline_has_unit_metrics() -> None:
-    from mecta.evaluation import evaluate_predictions
-    from mecta.schema import ReferenceEvent, TimelineEvent
+    from pooltls.evaluation import evaluate_predictions
+    from pooltls.schema import ReferenceEvent, TimelineEvent
 
     key = ("u", "0")
     references = {
@@ -158,8 +158,8 @@ def test_perfect_timeline_has_unit_metrics() -> None:
 
 
 def test_stage1_target_deduplicates_across_constraints() -> None:
-    from mecta.schema import ReferenceEvent
-    from mecta.stage1_data import deduplicate_references
+    from pooltls.schema import ReferenceEvent
+    from pooltls.stage1_data import deduplicate_references
 
     references = (
         ReferenceEvent("u", "0", "r0", "2020-01-01", "city approves aid"),
@@ -182,8 +182,8 @@ def test_stage1_target_deduplicates_across_constraints() -> None:
 
 
 def test_both_datasets_use_the_same_aligned_gold_stage1_builder() -> None:
-    from mecta.schema import Article, Constraint, ReferenceEvent
-    from mecta.stage1_data import prepare_stage1_records
+    from pooltls.schema import Article, Constraint, ReferenceEvent
+    from pooltls.stage1_data import prepare_stage1_records
 
     class Reader:
         def entity_ids(self, partition):
@@ -259,9 +259,9 @@ def test_both_datasets_use_the_same_aligned_gold_stage1_builder() -> None:
 
 
 def test_generation_prompt_contains_all_constraints_and_parser_filters_bad_item() -> None:
-    from mecta.schema import Article, Constraint
-    from mecta.stage1_data import joint_messages
-    from mecta.stage1_generation import parse_generation_response
+    from pooltls.schema import Article, Constraint
+    from pooltls.stage1_data import joint_messages
+    from pooltls.stage1_generation import parse_generation_response
 
     article = Article("u", "a0", "2020-01-01", "Title", "Full article text")
     constraints = tuple(Constraint("u", str(index), f"request {index}") for index in range(5))
@@ -291,7 +291,7 @@ def test_balanced_cross_entropy_equals_sum_of_class_means() -> None:
     import math
     import torch
 
-    from mecta.cross_encoder import balanced_binary_cross_entropy_with_logits
+    from pooltls.cross_encoder import balanced_binary_cross_entropy_with_logits
 
     logits = torch.zeros(3, dtype=torch.float32)
     targets = torch.tensor([1.0, 0.0, 0.0])

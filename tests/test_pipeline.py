@@ -9,11 +9,11 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 
-from mecta.evaluation import read_predictions, write_predictions
-from mecta.io import iter_jsonl, read_json, write_json, write_jsonl
-from mecta.pipeline import STAGE_NAMES, artifact_paths, select_stages
-from mecta.schema import Article, Constraint, TimelineEvent
-from mecta.stage1_generation import generate_partition
+from pooltls.evaluation import read_predictions, write_predictions
+from pooltls.io import iter_jsonl, read_json, write_json, write_jsonl
+from pooltls.pipeline import STAGE_NAMES, artifact_paths, select_stages
+from pooltls.schema import Article, Constraint, TimelineEvent
+from pooltls.stage1_generation import generate_partition
 from scripts import run_pipeline
 
 
@@ -166,7 +166,13 @@ class TestFullPipeline(unittest.TestCase):
         self.assertTrue((self.paths["evaluation"] / "test_metrics.json").is_file())
 
     def test_resume_rejects_unverified_runs_before_writing_or_dispatching(self) -> None:
-        for index, manifest in enumerate((None, "{}", '{"workflow": "other"}', "invalid JSON")):
+        for index, manifest in enumerate((
+            None,
+            "{}",
+            '{"workflow": "other"}',
+            '{"schema_version": 1, "workflow": "article_generation"}',
+            "invalid JSON",
+        )):
             with self.subTest(manifest=manifest):
                 run_dir = self.root / f"unverified_{index}"
                 write_json(run_dir / "mentions" / "test" / "_meta" / "summary.json", {})

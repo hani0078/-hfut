@@ -1,1 +1,1 @@
-"""Command-line entry points for the independent mecta pipeline."""
+"""Command-line entry points for the PoolTLS (Shared-Pool Timeline Summarization) pipeline."""

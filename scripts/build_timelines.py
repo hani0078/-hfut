@@ -13,18 +13,18 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from mecta.config import load_config, section
-from mecta.cross_encoder import (
+from pooltls.config import load_config, section
+from pooltls.cross_encoder import (
     load_cross_encoder_checkpoint,
     score_loaded_cross_encoder,
 )
-from mecta.data import DatasetReader
-from mecta.encoders import LocalTextEncoder
-from mecta.evaluation import evaluate_predictions, write_crest_timelines, write_predictions
-from mecta.io import iter_jsonl, read_json, write_json
-from mecta.ranking import direct_semantic_scores, fuse_scores
-from mecta.schema import Candidate
-from mecta.timeline import build_timelines
+from pooltls.data import DatasetReader
+from pooltls.encoders import LocalTextEncoder
+from pooltls.evaluation import evaluate_predictions, write_crest_timelines, write_predictions
+from pooltls.io import iter_jsonl, read_json, write_json
+from pooltls.ranking import direct_semantic_scores, fuse_scores
+from pooltls.schema import Candidate
+from pooltls.timeline import build_timelines
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -94,8 +94,8 @@ def main(argv: list[str] | None = None) -> int:
             "and chronological sorting"
         )
     selection = read_json(args.selection.expanduser().resolve())
-    if not isinstance(selection, dict) or selection.get("kind") != "mecta_stage2_selection":
-        raise ValueError("selection file is not a mecta Stage-II selection")
+    if not isinstance(selection, dict) or selection.get("kind") != "pooltls_stage2_selection":
+        raise ValueError("selection file is not a PoolTLS Stage-II selection")
     cross_weight = float(selection["cross_weight"])
     direct_weight = float(selection["direct_weight"])
     if not np.isclose(cross_weight + direct_weight, 1.0, atol=1.0e-8):

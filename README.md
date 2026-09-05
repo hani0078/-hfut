@@ -1,8 +1,8 @@
-# mecta
+# PoolTLS (Shared-Pool Timeline Summarization)
 
 Chinese version: [README_CN.md](README_CN.md)
 
-`mecta` implements the complete constrained timeline generation workflow for
+`PoolTLS` implements the complete constrained timeline generation workflow for
 CREST and WCEP-CTG: prepare Stage-I supervision, train a Llama QLoRA adapter,
 generate events from articles, cluster candidates, train the Stage-II
 cross-encoder, select settings on development data, and evaluate test timelines.
@@ -13,7 +13,7 @@ Both entry points, `run_all.sh` and `scripts/run_pipeline.py`, run this workflow
 ```text
 configs/                 Configurations for CREST and WCEP-CTG
 dataset/                 The two datasets
-mecta/                   Core Python package
+pooltls/                 Core Python package
 scripts/                 Command-line entry points for each stage
 tests/                   Offline unit tests
 requirements.txt         Python dependencies
@@ -40,7 +40,7 @@ dataset/
     └── statistics/
 ```
 
-`mecta.data.DatasetReader` exposes the splits as `train`, `development`, and
+`pooltls.data.DatasetReader` exposes the splits as `train`, `development`, and
 `test`; `development` corresponds to the on-disk `validation/` split. Any
 redistribution or use of the datasets must comply with the licenses and terms
 of their original sources.
@@ -172,6 +172,10 @@ exist. `--from-stage` requires `--resume` and assumes that earlier stages have
 finished. Resume requires a compatible `run_manifest.json` written by this
 workflow. Use a fresh directory for a new experiment and keep the configuration,
 datasets, and model files consistent when continuing an existing run.
+
+After updating to PoolTLS, start in a new run directory. Run manifests now record
+`method_name: PoolTLS`, and checkpoint and selection files use the `pooltls_`
+identifier prefix. Earlier run directories cannot be resumed with this version.
 
 Pipeline resumption does not automatically restore an interrupted training
 optimizer. To continue Stage-I training from a saved checkpoint, replace

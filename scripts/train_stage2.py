@@ -13,23 +13,23 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from mecta.config import load_config, section
-from mecta.cross_encoder import (
+from pooltls.config import load_config, section
+from pooltls.cross_encoder import (
     score_cross_encoder,
     select_hard_negatives,
     train_cross_encoder,
 )
-from mecta.data import DatasetReader
-from mecta.encoders import LocalTextEncoder
-from mecta.evaluation import evaluate_predictions
-from mecta.io import iter_jsonl, write_json
-from mecta.ranking import (
+from pooltls.data import DatasetReader
+from pooltls.encoders import LocalTextEncoder
+from pooltls.evaluation import evaluate_predictions
+from pooltls.io import iter_jsonl, write_json
+from pooltls.ranking import (
     direct_semantic_scores,
     fusion_weight_grid,
     select_fusion_weight,
 )
-from mecta.schema import Candidate, PairExample
-from mecta.timeline import build_timelines
+from pooltls.schema import Candidate, PairExample
+from pooltls.timeline import build_timelines
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -242,7 +242,7 @@ def main(argv: list[str] | None = None) -> int:
     assert best is not None
     selected_development = best["development"]
     selection = {
-        "kind": "mecta_stage2_selection",
+        "kind": "pooltls_stage2_selection",
         "dataset": config["dataset"],
         "checkpoint": best["checkpoint"],
         "model_path": str(config["paths"]["cross_encoder_model"]),

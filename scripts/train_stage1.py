@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from mecta.config import load_config, section  # noqa: E402
-from mecta.stage1_model import train_stage1_qlora  # noqa: E402
+from pooltls.config import load_config, section  # noqa: E402
+from pooltls.stage1_model import train_stage1_qlora  # noqa: E402
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

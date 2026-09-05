@@ -1,5 +1,5 @@
 dataset: wcep_ctg
-method_name: mecta
+method_name: PoolTLS
 seed: 42
 
 paths:

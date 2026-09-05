@@ -1,8 +1,8 @@
-# mecta
+# PoolTLS (Shared-Pool Timeline Summarization)
 
 English version: [README.md](README.md)
 
-`mecta` 提供 CREST 与 WCEP-CTG 上的完整约束时间轴生成流程：构造第一阶段
+`PoolTLS` 提供 CREST 与 WCEP-CTG 上的完整约束时间轴生成流程：构造第一阶段
 监督数据、训练 Llama QLoRA adapter、从文章生成事件、聚类候选、训练第二阶段
 交叉编码器、在开发集选择参数，并评测测试集时间轴。`run_all.sh` 与
 `scripts/run_pipeline.py` 均运行这一完整流程。
@@ -12,7 +12,7 @@ English version: [README.md](README.md)
 ```text
 configs/                 CREST 与 WCEP-CTG 配置
 dataset/                 两个数据集
-mecta/                   核心 Python 包
+pooltls/                 核心 Python 包
 scripts/                 各阶段命令行入口
 tests/                   离线单元测试
 requirements.txt         Python 依赖
@@ -38,7 +38,7 @@ dataset/
     └── statistics/
 ```
 
-`mecta.data.DatasetReader` 对外提供 `train`、`development` 和 `test` 三个划分，
+`pooltls.data.DatasetReader` 对外提供 `train`、`development` 和 `test` 三个划分，
 其中 `development` 对应磁盘上的 `validation/`。数据的继续分发和使用应遵循
 其原始来源对应的许可与条款。
 
@@ -159,6 +159,10 @@ python scripts/run_pipeline.py --config configs/crest.yaml --run-dir runs/crest_
 一起使用，并要求此前阶段已经完成。续跑需要本流程写出的兼容
 `run_manifest.json`。新实验使用新目录；继续已有实验时，应保持配置、数据集和
 模型文件一致。
+
+更新为 PoolTLS 后，请使用新的运行目录。运行标记现在记录
+`method_name: PoolTLS`，检查点和选择结果文件的标识使用 `pooltls_` 前缀。
+此前版本的运行目录不能直接使用本版本续跑。
 
 流水线续跑不会自动恢复训练中断时的优化器状态。若第一阶段训练中断且已保存
 检查点，可将下例的 `checkpoint-STEP` 替换为实际存在的检查点目录后执行：

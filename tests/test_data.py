@@ -130,7 +130,7 @@ def _build_crest(root: Path) -> tuple[dict[str, str], Path]:
 
 
 def test_wcep_split_jsonl_layout(tmp_path: Path) -> None:
-    from mecta.data import DatasetReader
+    from pooltls.data import DatasetReader
 
     topics = _build_wcep(tmp_path)
     reader = DatasetReader(_reader_config("wcep_ctg", tmp_path))
@@ -147,7 +147,7 @@ def test_wcep_split_jsonl_layout(tmp_path: Path) -> None:
 
 
 def test_crest_partition_directory_layout(tmp_path: Path) -> None:
-    from mecta.data import DatasetReader
+    from pooltls.data import DatasetReader
 
     topics, constraint_path = _build_crest(tmp_path)
     reader = DatasetReader(
@@ -191,8 +191,8 @@ def test_crest_partition_directory_layout(tmp_path: Path) -> None:
 def test_repository_dataset_configs_without_loading_models(
     config_name: str, expected: dict[str, tuple[int, int, int]]
 ) -> None:
-    from mecta.config import load_config
-    from mecta.data import DatasetReader
+    from pooltls.config import load_config
+    from pooltls.data import DatasetReader
 
     config = load_config(PROJECT_ROOT / "configs" / config_name)
     reader = DatasetReader(config)
@@ -211,7 +211,7 @@ def test_repository_dataset_configs_without_loading_models(
 
 
 def test_preflight_only_checks_model_paths(tmp_path: Path) -> None:
-    from mecta.pipeline import preflight
+    from pooltls.pipeline import preflight
 
     data_root = tmp_path / "data"
     _build_wcep(data_root)

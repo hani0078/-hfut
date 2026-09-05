@@ -9,14 +9,14 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from mecta.config import load_config  # noqa: E402
-from mecta.data import DatasetReader  # noqa: E402
-from mecta.evaluation import evaluate_dataset, read_predictions  # noqa: E402
-from mecta.io import write_json  # noqa: E402
+from pooltls.config import load_config  # noqa: E402
+from pooltls.data import DatasetReader  # noqa: E402
+from pooltls.evaluation import evaluate_dataset, read_predictions  # noqa: E402
+from pooltls.io import write_json  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Evaluate generated mecta timelines")
+    parser = argparse.ArgumentParser(description="Evaluate generated PoolTLS timelines")
     parser.add_argument("--config", required=True)
     parser.add_argument("--predictions", required=True)
     parser.add_argument("--output", required=True)

@@ -352,7 +352,7 @@ def train_cross_encoder(
 
     assert best_key is not None and best_state is not None
     checkpoint: dict[str, Any] = {
-        "kind": "mecta_cross_encoder",
+        "kind": "pooltls_cross_encoder",
         "model_path": str(Path(model_path).expanduser().resolve()),
         "epoch": best_epoch,
         "seed": int(seed),
@@ -375,8 +375,8 @@ def load_cross_encoder_checkpoint(
     checkpoint = torch.load(
         Path(path).expanduser().resolve(), map_location="cpu", weights_only=False
     )
-    if not isinstance(checkpoint, Mapping) or checkpoint.get("kind") != "mecta_cross_encoder":
-        raise ValueError("checkpoint is not a mecta cross encoder")
+    if not isinstance(checkpoint, Mapping) or checkpoint.get("kind") != "pooltls_cross_encoder":
+        raise ValueError("checkpoint is not a PoolTLS cross encoder")
     source = model_path if model_path is not None else checkpoint.get("model_path")
     if not isinstance(source, (str, Path)):
         raise ValueError("checkpoint does not identify its pretrained model")

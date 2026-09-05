@@ -12,10 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from mecta.config import load_config, section  # noqa: E402
-from mecta.data import DatasetReader  # noqa: E402
-from mecta.encoders import LocalTextEncoder  # noqa: E402
-from mecta.stage1_data import prepare_stage1_records, write_stage1_artifacts  # noqa: E402
+from pooltls.config import load_config, section  # noqa: E402
+from pooltls.data import DatasetReader  # noqa: E402
+from pooltls.encoders import LocalTextEncoder  # noqa: E402
+from pooltls.stage1_data import prepare_stage1_records, write_stage1_artifacts  # noqa: E402
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

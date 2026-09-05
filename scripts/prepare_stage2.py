@@ -10,12 +10,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from mecta.config import load_config, section
-from mecta.data import DatasetReader
-from mecta.encoders import LocalTextEncoder
-from mecta.io import iter_jsonl, write_json, write_jsonl
-from mecta.schema import Candidate
-from mecta.supervision import build_supervision
+from pooltls.config import load_config, section
+from pooltls.data import DatasetReader
+from pooltls.encoders import LocalTextEncoder
+from pooltls.io import iter_jsonl, write_json, write_jsonl
+from pooltls.schema import Candidate
+from pooltls.supervision import build_supervision
 
 
 def _parser() -> argparse.ArgumentParser:

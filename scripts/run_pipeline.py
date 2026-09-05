@@ -14,22 +14,26 @@ from typing import Callable, Sequence
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from mecta.config import load_config  # noqa: E402
-from mecta.evaluation import (  # noqa: E402
+from pooltls.config import load_config  # noqa: E402
+from pooltls.evaluation import (  # noqa: E402
     read_predictions,
     write_crest_timelines,
     write_predictions,
 )
-from mecta.io import read_json, write_json  # noqa: E402
-from mecta.pipeline import STAGE_NAMES, artifact_paths, preflight, select_stages  # noqa: E402
+from pooltls.io import read_json, write_json  # noqa: E402
+from pooltls.pipeline import STAGE_NAMES, artifact_paths, preflight, select_stages  # noqa: E402
 
 
-RUN_MANIFEST = {"schema_version": 1, "workflow": "article_generation"}
+RUN_MANIFEST = {
+    "schema_version": 1,
+    "workflow": "article_generation",
+    "method_name": "PoolTLS",
+}
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the independent mecta experiment from raw data to timelines"
+        description="Run the PoolTLS (Shared-Pool Timeline Summarization) experiment from raw data to timelines"
     )
     parser.add_argument("--config", required=True)
     parser.add_argument("--run-dir")
