@@ -13,7 +13,10 @@ class TextEncoder(Protocol):
 
 
 class LocalTextEncoder:
-    """Frozen local Transformer encoder with attention-mask mean pooling."""
+    """Frozen local Transformer encoder with attention-mask mean pooling.
+
+    PoolTLS supplies the configured GTE-large directory via paths.gte_model.
+    """
 
     def __init__(
         self,

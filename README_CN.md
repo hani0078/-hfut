@@ -75,7 +75,7 @@ YAML 文件所在目录解析：
 | 配置项 | 默认本地目录 | 用途 |
 | --- | --- | --- |
 | `paths.base_model` | `../models/Meta-Llama-3.1-8B-Instruct` | 第一阶段训练与文章事件生成 |
-| `paths.gte_model` | `../models/gte-large` | 语义检索、聚类、监督构造与直接语义打分 |
+| `paths.gte_model` | `../models/gte-large` | 使用 GTE-large 进行语义检索、聚类、监督构造、负例选择与直接语义打分 |
 | `paths.cross_encoder_model` | `../models/ms-marco-MiniLM-L-6-v2` | 第二阶段交叉编码器初始化 |
 
 可以将模型放在仓库的 `models/` 下，也可以修改
@@ -83,6 +83,12 @@ YAML 文件所在目录解析：
 [configs/wcep_ctg.yaml](configs/wcep_ctg.yaml) 中的模型路径，支持绝对路径。
 实验记录应保留实际模型版本与配置改动。第一阶段训练与生成均保留完整文章输入，
 超出配置中的 token 长度限制时会报错。
+
+两个数据集均配置 GTE-large 作为冻结的语义编码器。第一阶段监督构造、候选聚类、
+第二阶段监督构造与负例选择，以及开发集和测试集的直接语义打分，均读取
+`paths.gte_model`。请将实际的 GTE-large 权重、配置与 tokenizer 文件放入
+`models/gte-large`，或将该配置项指向已有的本地 GTE-large 目录。
+目录名称本身不会改变其中存储的模型权重。
 
 ## 运行完整流程
 
@@ -141,7 +147,7 @@ python scripts/run_pipeline.py --config configs/wcep_ctg.yaml --check-only
 | `prepare_stage2` | 构造训练正例，以及经过全约束筛选的可靠负例。 |
 | `train_stage2` | 训练 MiniLM 实验组，并根据开发集指标选择检查点与融合参数。 |
 | `select_development` | 将选定的第二阶段配置复制到 `selection/selected_config.json`。 |
-| `score_test` | 为测试候选打分，融合交叉编码器与 GTE 分数，并按选定参数解码。 |
+| `score_test` | 为测试候选打分，融合交叉编码器与 GTE-large 分数，并按选定参数解码。 |
 | `build_test_timelines` | 将已解码预测导出为 JSONL 和 CREST 时间轴目录格式。 |
 | `evaluate_test` | 写出 TILSE ROUGE-1、ROUGE-2 和日期的精确率、召回率及 F1。 |
 

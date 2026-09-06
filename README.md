@@ -84,7 +84,7 @@ to the YAML file:
 | Configuration key | Default local directory | Purpose |
 | --- | --- | --- |
 | `paths.base_model` | `../models/Meta-Llama-3.1-8B-Instruct` | Stage-I training and article generation |
-| `paths.gte_model` | `../models/gte-large` | Semantic retrieval, clustering, supervision, and direct scores |
+| `paths.gte_model` | `../models/gte-large` | GTE-large for semantic retrieval, clustering, supervision, negative selection, and direct scores |
 | `paths.cross_encoder_model` | `../models/ms-marco-MiniLM-L-6-v2` | Stage-II cross-encoder initialization |
 
 Place the models under the repository's `models/` directory or edit these paths
@@ -93,6 +93,13 @@ in [configs/crest.yaml](configs/crest.yaml) and
 Record the actual model versions and any configuration changes with an experiment.
 Stage-I training and generation preserve full article inputs and fail on inputs
 that exceed their configured token limits.
+
+Both dataset configurations use GTE-large as the frozen semantic encoder.
+Stage-I supervision, candidate clustering, Stage-II supervision and negative
+selection, and direct scoring on development and test data all load
+`paths.gte_model`. Place the actual GTE-large weights, configuration, and tokenizer
+in `models/gte-large`, or point this key to an existing local GTE-large directory.
+The directory name does not change the model weights stored inside it.
 
 ## Run the Complete Workflow
 
@@ -152,7 +159,7 @@ It does not load model weights, test GPU compatibility, or run experiments.
 | `prepare_stage2` | Build training positives and reliable negatives screened across all constraints. |
 | `train_stage2` | Train MiniLM trials and select checkpoints and fusion settings using development metrics. |
 | `select_development` | Copy the selected Stage-II configuration into `selection/selected_config.json`. |
-| `score_test` | Score test candidates, fuse cross-encoder and GTE scores, and decode with the selected settings. |
+| `score_test` | Score test candidates, fuse cross-encoder and GTE-large scores, and decode with the selected settings. |
 | `build_test_timelines` | Export the decoded predictions as JSONL and in the CREST timeline layout. |
 | `evaluate_test` | Write TILSE ROUGE-1/ROUGE-2 and date precision, recall, and F1 metrics. |
 

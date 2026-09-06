@@ -86,7 +86,7 @@ def select_hard_negatives(
     """Keep every positive and the closest reliable negatives per constraint.
 
     Reliable negatives have already been defined by supervision construction.
-    This function only applies a common training budget, using the frozen GTE
+    This function only applies a common training budget, using the frozen GTE-large
     cosine to retain the most confusable negatives in each entity--constraint
     group.
     """

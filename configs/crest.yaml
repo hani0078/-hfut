@@ -6,7 +6,7 @@ paths:
   data_root: ../dataset/crest_split
   constraints: ../dataset/crest_split/constraint_dict.json
   base_model: ../models/Meta-Llama-3.1-8B-Instruct
-  gte_model: ../models/gte-large
+  gte_model: ../models/gte-large  # Local GTE-large weights, configuration, and tokenizer.
   cross_encoder_model: ../models/ms-marco-MiniLM-L-6-v2
 
 embedding:
